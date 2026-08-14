@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Login</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="center-wrap">
+  <div class="card">
+    <h1>Login</h1>
+
+    <div class="error-msg" id="errorMsg">Invalid username or password.</div>
+
+    <form id="loginForm">
+      <div class="field">
+        <label for="username">Username or Email</label>
+        <input type="text" id="username" required />
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" required />
+      </div>
+      <button type="submit" class="btn-primary">Login</button>
+    </form>
+
+    <p class="switch-link">Don't have an account? <a href="register.html">Register here</a></p>
+  </div>
+</div>
+
+<script src="auth.js"></script>
+<script>
+  const form = document.getElementById('loginForm');
+  const errorMsg = document.getElementById('errorMsg');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorMsg.style.display = 'none';
+
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+
+    if (!username || !password) {
+      errorMsg.textContent = 'Please fill in both fields.';
+      errorMsg.style.display = 'block';
+      return;
+    }
+
+    const isValid = await validateLogin(username, password);
+
+    if (isValid) {
+      startSession(username);
+      window.location.href = 'dashboard.html';
+    } else {
+      // Do not reveal which field (username or password) was wrong
+      errorMsg.textContent = 'Invalid username or password.';
+      errorMsg.style.display = 'block';
+    }
+  });
+
+  // If already logged in, skip straight to dashboard
+  if (getSession()) {
+    window.location.href = 'dashboard.html';
+  }
+</script>
+
+</body>
+</html>
